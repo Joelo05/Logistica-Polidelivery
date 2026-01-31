@@ -27,15 +27,15 @@ def registrar_usuario():
     password = input("Contraseña: ")
 
     if not validar_edad(edad):
-        print("Debe ser mayor de edad")
+        print(" Debe ser mayor de edad")
         return
 
     if not validar_correo(correo):
-        print("Correo inválido")
+        print(" Correo inválido")
         return
 
     if not validar_contrasena(password):
-        print("Contraseña insegura")
+        print(" Contraseña insegura")
         return
 
     if correo_existe(correo):
@@ -45,4 +45,4 @@ def registrar_usuario():
     with open(RUTA_USUARIOS, "a") as f:
         f.write(f"{nombre};{cedula};{edad};{correo};{password};cliente\n")
 
-    print("Usuario registrado con éxito")
+    print(" Usuario registrado con éxito")
