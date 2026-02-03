@@ -1,6 +1,6 @@
 from usuarios.registro import registrar_usuario
 from usuarios.login import login
-
+from clientes.menuClientes import menu_cliente
 
 def menu():
     while True:
@@ -20,6 +20,7 @@ def menu():
                 print("Menú administrador")
             elif rol == "cliente":
                 print("Menú cliente")
+                menu_cliente()
 
         elif opcion == "3":
             print(" Saliendo del sistema")
