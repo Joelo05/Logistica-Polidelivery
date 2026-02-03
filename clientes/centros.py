@@ -79,3 +79,52 @@ def busqueda_lineal(centros, nombre):
         if c["centro"].lower() == nombre.lower():
             return c
     return None
+
+
+import heapq
+
+grafo = {}
+
+def agregar_ruta(origen, destino, costo):
+    if origen not in grafo:
+        grafo[origen] = []
+    grafo[origen].append((destino, costo))
+
+
+def dijkstra(inicio, fin):
+    cola = [(0, inicio, [])]
+    visitados = set()
+
+    while cola:
+        (c, nodo, path) = heapq.heappop(cola)
+        if nodo not in visitados:
+            visitados.add(nodo)
+            path = path + [nodo]
+            if nodo == fin:
+                return c, path
+            
+            for (vecino, costo_ruta) in grafo.get(nodo, []):
+                if vecino not in visitados:
+                    heapq.heappush(cola, (c + costo_ruta, vecino, path))
+    return 0, []
+
+ 
+def bfs(inicio):
+    visitados = []
+    cola = [inicio]
+    while cola:
+        nodo = cola.pop(0)
+        if nodo not in visitados:
+            visitados.append(nodo)
+            for (v, _) in grafo.get(nodo, []):
+                cola.append(v)
+    return visitados
+
+def dfs(nodo, visitados=None):
+    if visitados is None:
+        visitados = []
+    visitados.append(nodo)
+    for (v, _) in grafo.get(nodo, []):
+        if v not in visitados:
+            dfs(v, visitados)
+    return visitados
