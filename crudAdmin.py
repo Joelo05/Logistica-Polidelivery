@@ -1,165 +1,130 @@
+def cargar_centros():
+    centros = []
+    try:
+        with open("centros.txt", "r") as f:
+            for linea in f:
+                o, d, dist, costo = linea.strip().split(",")
+                centros.append({
+                    "origen": o,
+                    "destino": d,
+                    "distancia": int(dist),
+                    "costo": int(costo)
+                })
+    except FileNotFoundError:
+        pass
+    return centros
 
 
-import json
-import os
-
-ARCHIVO = "datos/centros.txt"
-os.makedirs("datos", exist_ok=True)
-
-
-def cargar_datos():
-    if not os.path.exists(ARCHIVO):
-        return {}, {}
-    with open(ARCHIVO, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data.get("centros", {}), data.get("rutas", {})
-
-
-def guardar_datos(centros, rutas):
-    with open(ARCHIVO, "w", encoding="utf-8") as f:
-        json.dump({"centros": centros, "rutas": rutas}, f, indent=4)
-
+def guardar_centros(centros):
+    with open("centros.txt", "w") as f:
+        for c in centros:
+            f.write(f"{c['origen']},{c['destino']},{c['distancia']},{c['costo']}\n")
 
 def agregar_centro(centros):
-    nombre = input("Nombre del centro: ")
-    region = input("Región: ")
-    centros[nombre] = region
+    origen = input("Centro origen: ")
+    destino = input("Centro destino: ")
+    distancia = int(input("Distancia (km): "))
+    costo = int(input("Costo ($): "))
 
+    centros.append({
+        "origen": origen,
+        "destino": destino,
+        "distancia": distancia,
+        "costo": costo
+    })
+    print(" Centro agregado")
+
+def merge_sort(lista, clave):
+    if len(lista) <= 1:
+        return lista
+
+    medio = len(lista) // 2
+    izq = merge_sort(lista[:medio], clave)
+    der = merge_sort(lista[medio:], clave)
+
+    return merge(izq, der, clave)
+
+
+def merge(a, b, clave):
+    resultado = []
+    while a and b:
+        if a[0][clave] < b[0][clave]:
+            resultado.append(a.pop(0))
+        else:
+            resultado.append(b.pop(0))
+    return resultado + a + b
+
+
+def listar_centros(centros):
+    ordenados = merge_sort(centros.copy(), "origen")
+    print("\n LISTA DE CENTROS")
+    for i, c in enumerate(ordenados):
+        print(f"{i}. {c['origen']} → {c['destino']} | {c['distancia']} km | ${c['costo']}")
+
+def buscar_centro_lineal(centros, nombre):
+    for c in centros:
+        if c["origen"].lower() == nombre.lower():
+            return c
+    return None
 
 def actualizar_centro(centros):
-    nombre = input("Centro a actualizar: ")
-    if nombre in centros:
-        centros[nombre] = input("Nueva región: ")
+    nombre = input("Ingrese centro origen a actualizar: ")
+    centro = buscar_centro_lineal(centros, nombre)
+
+    if centro:
+        centro["destino"] = input("Nuevo destino: ")
+        centro["distancia"] = int(input("Nueva distancia: "))
+        centro["costo"] = int(input("Nuevo costo: "))
+        print(" Centro actualizado")
     else:
-        print("Centro no encontrado")
+        print(" Centro no encontrado")
 
-
-def eliminar_centro(centros, rutas):
-    nombre = input("Centro a eliminar: ")
-    centros.pop(nombre, None)
-    rutas.pop(nombre, None)
-    for r in rutas.values():
-        r.pop(nombre, None)
-
-
-def agregar_ruta(rutas):
-    o = input("Origen: ")
-    d = input("Destino: ")
-    c = int(input("Costo: "))
-    rutas.setdefault(o, {})[d] = c
-    rutas.setdefault(d, {})[o] = c
-
-
-def burbuja(lista):
-    for i in range(len(lista)):
-        for j in range(0, len(lista)-i-1):
-            if lista[j] > lista[j+1]:
-                lista[j], lista[j+1] = lista[j+1], lista[j]
-    return lista
-
-
-def insercion(lista):
-    for i in range(1, len(lista)):
-        key = lista[i]
-        j = i-1
-        while j >= 0 and lista[j] > key:
-            lista[j+1] = lista[j]
-            j -= 1
-        lista[j+1] = key
-    return lista
-
-
-def seleccion(lista):
-    for i in range(len(lista)):
-        min_i = i
-        for j in range(i+1, len(lista)):
-            if lista[j] < lista[min_i]:
-                min_i = j
-        lista[i], lista[min_i] = lista[min_i], lista[i]
-    return lista
-
-
-def merge_sort(lista):
-    if len(lista) <= 1:
-        return lista
-    mid = len(lista)//2
-    izq = merge_sort(lista[:mid])
-    der = merge_sort(lista[mid:])
-    return merge(izq, der)
-
-
-def merge(a, b):
-    res = []
-    i = j = 0
-    while i < len(a) and j < len(b):
-        if a[i] < b[j]:
-            res.append(a[i]); i+=1
-        else:
-            res.append(b[j]); j+=1
-    res.extend(a[i:]); res.extend(b[j:])
-    return res
-
-
-def quick_sort(lista):
-    if len(lista) <= 1:
-        return lista
-    pivote = lista[0]
-    menores = [x for x in lista[1:] if x <= pivote]
-    mayores = [x for x in lista[1:] if x > pivote]
-    return quick_sort(menores) + [pivote] + quick_sort(mayores)
-
-
-def busqueda_lineal(lista, x):
-    for i, v in enumerate(lista):
-        if v == x:
-            return i
-    return -1
-
-
-def busqueda_binaria(lista, x):
-    ini, fin = 0, len(lista)-1
-    while ini <= fin:
-        mid = (ini + fin)//2
-        if lista[mid] == x:
-            return mid
-        if lista[mid] < x:
-            ini = mid + 1
-        else:
-            fin = mid - 1
-    return -1
-
-
-def busqueda_interpolacion(lista, x):
-    low, high = 0, len(lista)-1
-    while low <= high and x >= lista[low] and x <= lista[high]:
-        pos = low + int(((float(high-low) / (lista[high]-lista[low])) * (x - lista[low])))
-        if lista[pos] == x:
-            return pos
-        if lista[pos] < x:
-            low = pos + 1
-        else:
-            high = pos - 1
-    return -1
-
+def eliminar_centro(centros):
+    nombre = input("Centro origen a eliminar: ")
+    for i, c in enumerate(centros):
+        if c["origen"].lower() == nombre.lower():
+            centros.pop(i)
+            print("🗑️ Centro eliminado")
+            return
+    print(" Centro no encontrado")
 
 def menu_admin():
-    centros, rutas = cargar_datos()
+    centros = cargar_centros()
 
     while True:
-        print("\n--- MENU ADMINISTRADOR ---")
-        print("1. Agregar centro")
-        print("2. Actualizar centro")
-        print("3. Eliminar centro")
-        print("4. Agregar ruta")
-        print("5. Guardar cambios")
-        print("6. Salir")
+        print("\n MENÚ ADMINISTRADOR")
+        print("1. Agregar centro o ruta")
+        print("2. Listar centros (Merge Sort)")
+        print("3. Consultar centro (Búsqueda Lineal)")
+        print("4. Actualizar centro")
+        print("5. Eliminar centro")
+        print("6. Guardar cambios")
+        print("7. Salir")
 
         op = input("Opción: ")
 
-        if op == "1": agregar_centro(centros)
-        elif op == "2": actualizar_centro(centros)
-        elif op == "3": eliminar_centro(centros, rutas)
-        elif op == "4": agregar_ruta(rutas)
-        elif op == "5": guardar_datos(centros, rutas)
-        elif op == "6": break
+        if op == "1":
+            agregar_centro(centros)
 
+        elif op == "2":
+            listar_centros(centros)
+
+        elif op == "3":
+            nombre = input("Centro origen: ")
+            c = buscar_centro_lineal(centros, nombre)
+            print(c if c else " No encontrado")
+
+        elif op == "4":
+            actualizar_centro(centros)
+
+        elif op == "5":
+            eliminar_centro(centros)
+
+        elif op == "6":
+            guardar_centros(centros)
+            print(" Cambios guardados")
+
+        elif op == "7":
+            break
+
+menu_admin()        
