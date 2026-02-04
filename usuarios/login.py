@@ -1,3 +1,4 @@
+from clientes.centros import obtener_nombre
 RUTA_USUARIOS = "data/usuarios.txt"
 
 
@@ -11,6 +12,7 @@ def login():
                 datos = linea.strip().split(";")
                 if datos[3] == correo and datos[4] == password:
                     print("Login exitoso")
+                    obtener_nombre(datos[0])
                     return datos[5]  # rol
     except FileNotFoundError:
         pass

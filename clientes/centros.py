@@ -1,6 +1,13 @@
 from clientes.arbol import *
-# aplicar dijkstra que aún no está implementado.
+from usuarios.registro import *
+import heapq
+
 centros_seleccionados = []
+nombre_cliente = None
+
+def obtener_nombre(nombre):
+    global nombre_cliente
+    nombre_cliente = nombre
 
 def seleccionar_centro(centros):
     nombre = input("Ingrese el nombre del centro: ").strip()
@@ -33,8 +40,7 @@ def eliminar_centro():
     else:
         print("El centro no está en la selección.")
 
-
-def calcular_costo_total(funcion_dijkstra):
+def calcular_costo_total():
     if len(centros_seleccionados) < 2:
         print("Debe seleccionar al menos dos centros.")
         return 0
@@ -45,7 +51,7 @@ def calcular_costo_total(funcion_dijkstra):
         origen = centros_seleccionados[i]
         destino = centros_seleccionados[i + 1]
 
-        costo, ruta = funcion_dijkstra(origen, destino)
+        costo, ruta = dijkstra(origen, destino)
         print(f"Ruta: {ruta} | Costo: {costo}")
 
         costo_total += costo
@@ -53,19 +59,22 @@ def calcular_costo_total(funcion_dijkstra):
     print(f"\nCosto total del envío: {costo_total}")
     return costo_total
 
-def guardar_ruta(nombre_cliente, costo_total):
-    nombre_archivo = f"rutas-{nombre_cliente}.txt"
+def guardar_ruta(costo_total):
+    if nombre_cliente is not None:
+        nombre_archivo = f"rutas-{nombre_cliente}.txt"
 
-    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-        archivo.write(f"Cliente: {nombre_cliente}\n")
-        archivo.write("Centros seleccionados:\n")
+        with open(f"data/{nombre_archivo}", "w", encoding="UTF-8") as archivo:
+            archivo.write(f"Cliente: {nombre_cliente}\n")
+            archivo.write("Centros seleccionados:\n")
 
-        for centro in centros_seleccionados:
-            archivo.write(f"- {centro}\n")
+            for centro in centros_seleccionados:
+                archivo.write(f"- {centro}\n")
 
-        archivo.write(f"\nCosto total del envío: {costo_total}\n")
+            archivo.write(f"\nCosto total del envío: {costo_total}\n")
 
-    print(f"Ruta guardada correctamente en {nombre_archivo}")
+        print(f"Ruta guardada correctamente en {nombre_archivo}")
+    else:
+        print("nombre de cliente no conseguido") # sujeto a cambios
 
 def burbuja_centros(centros):
     n = len(centros)
@@ -74,16 +83,18 @@ def burbuja_centros(centros):
             if centros[j]["centro"] > centros[j + 1]["centro"]:
                 centros[j], centros[j + 1] = centros[j + 1], centros[j]
 
+def mostrar_centros(centros):
+    print("\nCentros de distribución:")
+    for i, c in enumerate(centros, start=1):
+        print(f"{i}. {c['centro']} ({c['region']} - {c['subregion']})")
+
 def busqueda_lineal(centros, nombre):
     for c in centros:
         if c["centro"].lower() == nombre.lower():
             return c
     return None
 
-
-import heapq
-
-grafo = {}
+grafo = cargar_grafo_desde_archivo("data/rutas.txt")
 
 def agregar_ruta(origen, destino, costo):
     if origen not in grafo:
@@ -128,3 +139,4 @@ def dfs(nodo, visitados=None):
         if v not in visitados:
             dfs(v, visitados)
     return visitados
+

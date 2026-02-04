@@ -15,7 +15,7 @@ def menu_cliente():
     print("10. Salir")
     return input("Seleccione una opción: ")
 
-def ejecutar_menu_cliente(nombre_cliente, dijkstra_func):
+def ejecutar_menu_cliente():
     centros = leer_centros_desde_archivo()
     arbol = construir_arbol_regiones(centros)
 
@@ -32,7 +32,7 @@ def ejecutar_menu_cliente(nombre_cliente, dijkstra_func):
             origen = input("Centro origen: ").strip()
             destino = input("Centro destino: ").strip()
 
-            costo, ruta = dijkstra_func(origen, destino)
+            costo, ruta = dijkstra(origen, destino)
             print(f"Ruta óptima: {ruta}")
             print(f"Costo total: {costo}")
 
@@ -48,12 +48,13 @@ def ejecutar_menu_cliente(nombre_cliente, dijkstra_func):
         elif opcion == "5":
             # Listar centros seleccionados y costo total
             mostrar_centros_seleccionados()
-            calcular_costo_total(dijkstra_func)
+            calcular_costo_total()
 
         elif opcion == "6":
             # Aplicar algoritmo de ordenamiento
             burbuja_centros(centros)
             print("Centros ordenados alfabéticamente.")
+            mostrar_centros(centros)
 
         elif opcion == "7":
             # Actualizar selección de centros
@@ -67,8 +68,8 @@ def ejecutar_menu_cliente(nombre_cliente, dijkstra_func):
 
         elif opcion == "9":
             # Guardar la selección en archivo
-            costo_total = calcular_costo_total(dijkstra_func)
-            guardar_ruta(nombre_cliente, costo_total)
+            costo_total = calcular_costo_total()
+            guardar_ruta(costo_total)
 
         elif opcion == "10":
             # Salir

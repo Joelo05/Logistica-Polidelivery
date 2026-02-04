@@ -1,0 +1,12 @@
+Quito,Sierra,Norte
+Ibarra,Sierra,Norte
+Cuenca,Sierra,Sur
+Loja,Sierra,Sur
+Guayaquil,Costa,Centro
+Esmeraldas,Costa,Norte
+Machala,Costa,Sur
+Tena,Amazonía,Centro
+Puyo,Amazonía,Sur
+Macas,Amazonía,Sur
+Nueva Loja,Amazonía,Norte
+Coca,Amazonía,Norte

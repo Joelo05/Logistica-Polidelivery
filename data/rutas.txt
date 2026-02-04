@@ -1,0 +1,13 @@
+Quito,Ibarra,10
+Quito,Cuenca,20
+Cuenca,Loja,12
+Ibarra,Esmeraldas,18
+Quito,Guayaquil,25
+Guayaquil,Machala,14
+Guayaquil,Esmeraldas,16
+Quito,Tena,22
+Tena,Puyo,8
+Puyo,Macas,10
+Tena,Coca,15
+Coca,Nueva Loja,6
+Nueva Loja,Puyo,14

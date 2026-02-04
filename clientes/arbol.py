@@ -1,16 +1,19 @@
 def leer_centros_desde_archivo():
     centros = []
 
-    with open("data/centros.txt", "r") as archivo:
-        for linea in archivo:
-            centro, region, subregion = linea.strip().split(",")
-            centros.append({
-                "centro": centro,
-                "region": region,
-                "subregion": subregion
-            })
+    try:
+        with open("data/centros.txt", "r") as archivo:
+            for linea in archivo:
+                centro, region, subregion = linea.strip().split(",")
+                centros.append({
+                    "centro": centro,
+                    "region": region,
+                    "subregion": subregion
+                })
 
-    return centros
+        return centros
+    except FileNotFoundError:
+        print("Archivo no encontrado")
 
 def construir_arbol_regiones(centros):
     arbol = {"Ecuador": {}}
@@ -38,3 +41,22 @@ def mostrar_arbol(arbol, nivel=0):
         elif isinstance(valor, list):
             for item in valor:
                 print("  " * (nivel + 1) + f"- {item}")
+
+def cargar_grafo_desde_archivo(nombre_archivo):
+    grafo = {}
+
+    with open(nombre_archivo, "r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            origen, destino, costo = linea.strip().split(",")
+            costo = int(costo)
+
+            if origen not in grafo:
+                grafo[origen] = []
+            if destino not in grafo:
+                grafo[destino] = []
+
+            # Grafo no dirigido (bidireccional)
+            grafo[origen].append((destino, costo))
+            grafo[destino].append((origen, costo))
+
+    return grafo

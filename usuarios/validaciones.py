@@ -6,7 +6,7 @@ def validar_correo(correo):
     return (
         correo.count("@") == 1
         and correo.endswith("@gmail.com")
-        and "." in correo.split("@")[0]
+        # and "." in correo.split("@")[0]
     )
 
 
