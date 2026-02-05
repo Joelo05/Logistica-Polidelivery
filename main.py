@@ -1,3 +1,5 @@
+
+from administrador.admin import menu_admin
 from usuarios.registro import registrar_usuario
 from usuarios.login import login
 from clientes.menuClientes import ejecutar_menu_cliente
@@ -18,6 +20,7 @@ def menu():
             rol = login()
             if rol == "admin":
                 print("Menú administrador")
+                menu_admin()
             elif rol == "cliente":
                 print("Menú cliente")
                 ejecutar_menu_cliente()
